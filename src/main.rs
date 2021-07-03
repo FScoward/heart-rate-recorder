@@ -2,10 +2,10 @@ use serde::Deserialize;
 
 fn main() {
     println!("Hello, world!");
-    match envy::prefixed("FITBIT_").from_env::<OAuth>() {
-        Ok(oauth) => println!("{:#?}", oauth),
-        Err(error) => panic!("{:#?}", error),
-    }
+    let uri = envy::prefixed("FITBIT_").from_env::<OAuth>().map(|oauth_config| 
+            format!("https://www.fitbit.com/oauth2/authorize?response_type=code&client_id={}&redirect_uri=http%3A%2F%2Flocalhost&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800", oauth_config.client_id)
+    );
+    println!("{:?}", uri)
 }
 
 #[derive(Deserialize, Debug)]
